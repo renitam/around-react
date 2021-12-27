@@ -1,5 +1,5 @@
 import logo from './images/logo.svg';
-import './App.css';
+import profilePic from './images/profile-pic.jpg'
 
 function App() {
   return (
@@ -14,9 +14,8 @@ function App() {
         <div className="profile__content">
           <div className="profile__avatar-overlay">
             <img
-              src="./images/profile-pic"
-              alt="Profile
-            picture"
+              src={profilePic}
+              alt="Profile avatar"
               className="profile__avatar"
             />
           </div>
@@ -160,9 +159,9 @@ function App() {
             className="card__trash link"
             aria-label="trash button"
           ></button>
-          <img src="placeholder" className="card__image" />
+          <img src="#" alt="" className="card__image" />
           <div className="card__info-wrapper">
-            <h2 className="card__title"></h2>
+            <h2 className="card__title">Card</h2>
             <div className="card__like-wrapper">
               <button
                 type="button"
