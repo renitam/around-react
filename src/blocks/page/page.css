@@ -3,6 +3,7 @@
   box-sizing: border-box;
   background-color: #000;
   max-width: 1280px;
+  height: 100vh;
   position: relative;
   font-family: 'Inter', sans-serif;
   color: #fff;
