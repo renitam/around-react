@@ -14,15 +14,15 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({});
 
   function handleEditAvatarClick() {
-    setEditAvatarOpen(!isEditAvatarOpen);
+    setEditAvatarOpen(true);
   }
 
   function handleEditProfileClick() {
-    setEditProfileOpen(!isEditProfileOpen);
+    setEditProfileOpen(true);
   }
 
   function handleAddPlaceClick() {
-    setAddPlaceOpen(!isAddPlaceOpen);
+    setAddPlaceOpen(true);
   }
 
   function handleCardClick(card) {
