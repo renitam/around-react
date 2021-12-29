@@ -7,6 +7,15 @@
 @import url(./blocks/link/link.css);
 @import url(./blocks/modal/modal.css);
 @import url(./blocks/modal/_display/modal_display.css);
-@import url(./blocks/page/page.css);
-@import url(./blocks/page-overlay/page-overlay.css);
 @import url(./blocks/profile/profile.css);
+
+body {
+  margin: 0 auto;
+  box-sizing: border-box;
+  background-color: #000;
+  max-width: 1280px;
+  height: 100vh;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
