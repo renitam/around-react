@@ -4,7 +4,6 @@ import Main from './components/Main';
 import Footer from './components/Footer';
 import PopupWithForm from './components/PopupWithForm';
 import ImagePopup from './components/ImagePopup';
-import api from './utils/api';
 
 function App() {
   const [isEditAvatarOpen, setEditAvatarOpen] = React.useState(false);
@@ -12,6 +11,7 @@ function App() {
   const [isAddPlaceOpen, setAddPlaceOpen] = React.useState(false);
   const [isConfirmTrashOpen, setConfirmTrashOpen] = React.useState(false);
   const [isPreviewOpen, setPreviewOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState({});
 
   function handleEditAvatarClick() {
     setEditAvatarOpen(!isEditAvatarOpen);
@@ -25,12 +25,18 @@ function App() {
     setAddPlaceOpen(!isAddPlaceOpen);
   }
 
+  function handleCardClick(card) {
+    setSelectedCard(card);
+    setPreviewOpen(true);
+  }
+
   function closeAllPopups() {
     setEditAvatarOpen(false)
     setEditProfileOpen(false)
     setAddPlaceOpen(false)
     setConfirmTrashOpen(false)
     setPreviewOpen(false)
+    setSelectedCard({})
   }
 
   return (
@@ -40,6 +46,7 @@ function App() {
         onEditProfileClick={handleEditProfileClick}
         onAddPlaceClick={handleAddPlaceClick} 
         onEditAvatarClick={handleEditAvatarClick}
+        onCardClick={handleCardClick}
         />
       <Footer />
 
@@ -109,7 +116,7 @@ function App() {
         <button type="submit" className="modal__save">Yes</button>
       </PopupWithForm>
 
-      <ImagePopup isOpen={isPreviewOpen} onClose={closeAllPopups}/>
+      <ImagePopup isOpen={isPreviewOpen} onClose={closeAllPopups} card={selectedCard}/>
     </div>
   );
 }

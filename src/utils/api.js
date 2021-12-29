@@ -49,20 +49,20 @@ class Api {
       .then(res => this._checkServerCode(res))
   }
 
-    // 9 Update profile pic in server
-    saveAvatar(link) {
-      return fetch(`${this._baseUrl}/${this._groupID}/users/me/avatar`, {
-        method: "PATCH",
-        headers: {
-          authorization: this._authToken,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          avatar: link
-        })
+  // 9 Update profile pic in server
+  saveAvatar(link) {
+    return fetch(`${this._baseUrl}/${this._groupID}/users/me/avatar`, {
+      method: "PATCH",
+      headers: {
+        authorization: this._authToken,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        avatar: link
       })
-        .then(res => this._checkServerCode(res))
-    }
+    })
+      .then(res => this._checkServerCode(res))
+  }
 
   // 4 Add new card to server
   addCard({ name, link }) {

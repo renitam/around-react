@@ -1,51 +1,20 @@
 import React from 'react';
+import Card from './Card';
 import api from '../utils/api';
 
 function Main(props) {
   const [userName, setUserName] = React.useState("");
   const [userAbout, setUserAbout] = React.useState("");
   const [userAvatar, setUserAvatar] = React.useState("");
-  const [cards, setCards] = React.useState([]);
-  const cardContainer = document.querySelector(".cards");
-
-  const renderCard = (item) => {
-    cardContainer.prepend(item)
-  }
-
-  console.log(api)
+  const [cardList, setCardList] = React.useState([]);
 
   React.useEffect(() => {
     Promise.all([api.getInitialCards(), api.getProfileInfo()])
     .then( ([initialCards, userInfo]) => {
-      console.log(initialCards, userInfo);
       setUserName(userInfo.name);
       setUserAbout(userInfo.about);
       setUserAvatar(userInfo.avatar);
-      setCards(initialCards.reverse());
-      cards.forEach((item) => {
-        console.log(item)
-        // renderCard(
-        //   <article className="card">
-        //   <button
-        //     type="button"
-        //     className="card__trash link"
-        //     aria-label="trash button"
-        //   ></button>
-        //   <img src="${}" alt="" className="card__image" />
-        //   <div className="card__info-wrapper">
-        //     <h2 className="card__title">Card</h2>
-        //     <div className="card__like-wrapper">
-        //       <button
-        //         type="button"
-        //         className="card__like"
-        //         aria-label="like button"
-        //       ></button>
-        //       <p className="card__like-num">0</p>
-        //     </div>
-        //   </div>
-        // </article>
-        // )
-      });
+      setCardList([...initialCards]);
     })
     .catch(err => `Unable to load data: ${err}`)
   }, [])
@@ -76,7 +45,11 @@ function Main(props) {
         <button type="button" className="profile__add-btn link" onClick={props.onAddPlaceClick}></button>
       </section>
 
-      <section className="cards"></section>
+      <section className="cards">
+        {cardList.map((item) => (
+          <Card key={item._id} card={item} onCardClick={props.onCardClick}/>
+        ))}
+      </section>
     </main>
   );
 }
