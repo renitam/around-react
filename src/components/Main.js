@@ -10,10 +10,10 @@ function Main(props) {
 
   React.useEffect(() => {
     Promise.all([api.getInitialCards(), api.getProfileInfo()])
-    .then( ([initialCards, userInfo]) => {
-      setUserName(userInfo.name);
-      setUserAbout(userInfo.about);
-      setUserAvatar(userInfo.avatar);
+    .then( ([initialCards, { name, about, avatar}]) => {
+      setUserName(name);
+      setUserAbout(about);
+      setUserAvatar(avatar);
       setCardList([...initialCards]);
     })
     .catch(err => `Unable to load data: ${err}`)
