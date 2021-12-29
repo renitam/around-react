@@ -1,16 +1,17 @@
-function PopupWithForm (props) {
+function PopupWithForm ({ isOpen, name, title, onClose, buttonText = "Save", children }) {
   return(
-    <section className={`modal modal_type_${props.name} ${props.isOpen ? 'modal_display' : ''}`}>
+    <section className={`modal modal_type_${name} ${isOpen && 'modal_display'}`}>
         <div className="modal__body">
-          <form className={`modal__form modal__form_type_${props.name}`} name={props.name}>
+          <form className={`modal__form modal__form_type_${name}`} name={name}>
             <button
               type="button"
               className="modal__close-btn link"
-              aria-label={`close ${props.name} menu`}
-              onClick={props.onClose}
+              aria-label={`close ${name} menu`}
+              onClick={onClose}
             ></button>
-            <h2 className="modal__title">{props.title}</h2>
-            {props.children}
+            <h2 className="modal__title">{title}</h2>
+            {children}
+            <button type="submit" className="modal__save">{buttonText}</button>
           </form>
         </div>
       </section>
