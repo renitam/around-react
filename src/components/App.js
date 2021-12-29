@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from './components/Header';
-import Main from './components/Main';
-import Footer from './components/Footer';
-import PopupWithForm from './components/PopupWithForm';
-import ImagePopup from './components/ImagePopup';
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
+import PopupWithForm from './PopupWithForm';
+import ImagePopup from './ImagePopup';
 
 function App() {
   const [isEditAvatarOpen, setEditAvatarOpen] = React.useState(false);
@@ -50,7 +50,7 @@ function App() {
         />
       <Footer />
 
-      <PopupWithForm title="Change profile picture" name="avatar" isOpen={isEditAvatarOpen} onClose={closeAllPopups}>
+      <PopupWithForm isOpen={isEditAvatarOpen} name="avatar" title="Change profile picture" onClose={closeAllPopups}>
         <input
           type="url"
           name="link"
@@ -61,10 +61,9 @@ function App() {
           required
         />
         <span className="modal__input-error modal__input-error_avatar"></span>
-        <button type="submit" className="modal__save">Save</button>
       </PopupWithForm>
 
-      <PopupWithForm title="Edit profile" name="profile" isOpen={isEditProfileOpen} onClose={closeAllPopups}>
+      <PopupWithForm isOpen={isEditProfileOpen} name="profile" title="Edit profile" onClose={closeAllPopups}>
         <input
           type="text"
           name="name"
@@ -85,10 +84,9 @@ function App() {
           required
         />
         <span className="modal__input-error modal__input-error_about"></span>
-        <button type="submit" className="modal__save">Save</button>
       </PopupWithForm>
 
-      <PopupWithForm title="New place" name="card" isOpen={isAddPlaceOpen} onClose={closeAllPopups}>
+      <PopupWithForm isOpen={isAddPlaceOpen} name="card" title="New place" onClose={closeAllPopups} buttonText="Create">
         <input
           type="text"
           name="name"
@@ -109,14 +107,11 @@ function App() {
           required
         />
         <span className="modal__input-error modal__input-error_image"></span>
-        <button type="submit" className="modal__save">Create</button>
       </PopupWithForm>
 
-      <PopupWithForm title="Are you sure?" name="trash" isOpen={isConfirmTrashOpen} onClose={closeAllPopups}>
-        <button type="submit" className="modal__save">Yes</button>
-      </PopupWithForm>
+      <PopupWithForm isOpen={isConfirmTrashOpen} name="trash" title="Are you sure?" onClose={closeAllPopups} buttonText="Yes" />
 
-      <ImagePopup isOpen={isPreviewOpen} onClose={closeAllPopups} card={selectedCard}/>
+      <ImagePopup isOpen={isPreviewOpen} onClose={closeAllPopups} card={selectedCard} />
     </div>
   );
 }
