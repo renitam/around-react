@@ -1,16 +1,24 @@
 import React from "react"
 import { CurrentUserContext } from "./CurrentUserContext"
 
-function Card({ card, onCardClick }) {
-  const userId = React.useContext(CurrentUserContext)._id
-  const isOwn = card.owner._id === userId
-  const isLiked = card.likes.some(i => i._id === userId)
+function Card({ card, onCardClick, onCardLike, onCardDelete }) {
+  const currentUser = React.useContext(CurrentUserContext)
+  const isOwn = card.owner._id === currentUser._id
+  const isLiked = card.likes.some(i => i._id === currentUser._id)
   const likeClass = `card__like ${isLiked && 'card__like_active'}`
 
   function handleClick() {
     onCardClick(card)
   }
 
+  function handleLike() {
+    onCardLike(card)
+  }
+
+  function handleTrash() {
+    onCardDelete(card)
+  }
+ 
   return(
     <article className='card'>
       {isOwn &&
@@ -18,6 +26,7 @@ function Card({ card, onCardClick }) {
         type='button'
         className='card__trash link'
         aria-label='trash button'
+        onClick={handleTrash}
       ></button>}
       <img 
         src={card.link}  
@@ -32,6 +41,7 @@ function Card({ card, onCardClick }) {
             type='button'
             className={likeClass}
             aria-label='like button'
+            onClick={handleLike}
           ></button>
           <p className='card__like-num'>{card.likes.length}</p>
         </div>

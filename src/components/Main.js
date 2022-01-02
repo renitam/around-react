@@ -9,19 +9,34 @@ function Main({ onEditAvatarClick, onEditProfileClick, onAddPlaceClick, onCardCl
   const [userAbout, setUserAbout] = React.useState('')
   const [userAvatar, setUserAvatar] = React.useState('')
   const [cardList, setCardList] = React.useState([])
-  const userInfo = React.useContext(CurrentUserContext)
+  const currentUser = React.useContext(CurrentUserContext)
 
   React.useEffect(() => {
-    setUserName(userInfo.name)
-    setUserAbout(userInfo.about)
-    setUserAvatar(userInfo.avatar)
+    setUserName(currentUser.name)
+    setUserAbout(currentUser.about)
+    setUserAvatar(currentUser.avatar)
 
     api.getInitialCards()
       .then( (initialCards) => {
         setCardList([...initialCards])
       })
       .catch(err => `Unable to load data: ${err}`)
-    }, [userInfo])
+    }, [currentUser, cardList])
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id)
+
+    api.changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCardList((state) => state.map((c) => c._id === card._id ? newCard : c));
+      });
+  }
+
+  function handleCardDelete(card) {
+    api.trashCard(card._id)
+      .then( setCardList( cardList.filter(cards => cards._id !== card._id) ))
+      .catch(err => `Unable to delete card: ${err}`)
+  }
 
   return(
     <main>
@@ -51,7 +66,7 @@ function Main({ onEditAvatarClick, onEditProfileClick, onAddPlaceClick, onCardCl
 
       <section className='cards'>
         {cardList.map((item) => (
-          <Card key={item._id} card={item} onCardClick={onCardClick} />
+          <Card key={item._id} card={item} onCardClick={onCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
         ))}
       </section>
     </main>
