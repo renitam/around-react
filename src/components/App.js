@@ -4,6 +4,8 @@ import Main from './Main'
 import Footer from './Footer'
 import PopupWithForm from './PopupWithForm'
 import ImagePopup from './ImagePopup'
+import api from '../utils/api'
+import { CurrentUserContext } from './CurrentUserContext'
 
 function App() {
   const [isEditAvatarOpen, setEditAvatarOpen] = React.useState(false)
@@ -12,7 +14,14 @@ function App() {
   const [isConfirmTrashOpen, setConfirmTrashOpen] = React.useState(false)
   const [isPreviewOpen, setPreviewOpen] = React.useState(false)
   const [selectedCard, setSelectedCard] = React.useState({})
-  const [currentUser, setCurrentUser] = React.useState('')
+  const [currentUser, setCurrentUser] = React.useState({})
+
+  React.useEffect(() => {
+    api.getProfileInfo()
+      .then((info) => {
+        setCurrentUser(info);
+      })
+  }, [])
 
   function handleEditAvatarClick() {
     setEditAvatarOpen(true)
@@ -43,12 +52,15 @@ function App() {
   return (
     <div className='page'>
       <Header />
-      <Main 
-        onEditProfileClick={handleEditProfileClick}
-        onAddPlaceClick={handleAddPlaceClick} 
-        onEditAvatarClick={handleEditAvatarClick}
-        onCardClick={handleCardClick}
+      <CurrentUserContext.Provider value={currentUser}>
+        <Main 
+          onEditProfileClick={handleEditProfileClick}
+          onAddPlaceClick={handleAddPlaceClick} 
+          onEditAvatarClick={handleEditAvatarClick}
+          onCardClick={handleCardClick}
         />
+      </CurrentUserContext.Provider>
+      
       <Footer />
 
       <PopupWithForm isOpen={isEditAvatarOpen} name='avatar' title='Change profile picture' onClose={closeAllPopups}>

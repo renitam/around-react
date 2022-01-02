@@ -1,23 +1,27 @@
 import React from 'react'
 import Card from './Card'
 import api from '../utils/api'
+import { CurrentUserContext } from './CurrentUserContext'
 
-function Main(props) {
+function Main({ onEditAvatarClick, onEditProfileClick, onAddPlaceClick, onCardClick }) {
+
   const [userName, setUserName] = React.useState('')
   const [userAbout, setUserAbout] = React.useState('')
   const [userAvatar, setUserAvatar] = React.useState('')
   const [cardList, setCardList] = React.useState([])
+  const userInfo = React.useContext(CurrentUserContext)
 
   React.useEffect(() => {
-    Promise.all([api.getInitialCards(), api.getProfileInfo()])
-    .then( ([initialCards, { name, about, avatar}]) => {
-      setUserName(name)
-      setUserAbout(about)
-      setUserAvatar(avatar)
-      setCardList([...initialCards])
-    })
-    .catch(err => `Unable to load data: ${err}`)
-  }, [])
+    setUserName(userInfo.name)
+    setUserAbout(userInfo.about)
+    setUserAvatar(userInfo.avatar)
+
+    api.getInitialCards()
+      .then( (initialCards) => {
+        setCardList([...initialCards])
+      })
+      .catch(err => `Unable to load data: ${err}`)
+    }, [userInfo])
 
   return(
     <main>
@@ -28,7 +32,7 @@ function Main(props) {
               src={userAvatar}
               alt='Profile avatar'
               className='profile__avatar'
-              onClick={props.onEditAvatarClick}
+              onClick={onEditAvatarClick}
             />
           </div>
           <div className='profile__info'>
@@ -37,17 +41,17 @@ function Main(props) {
               type='button'
               className='profile__edit-btn link'
               aria-label='open edit profile menu'
-              onClick={props.onEditProfileClick}
+              onClick={onEditProfileClick}
             ></button>
             <p className='profile__about'>{userAbout}</p>
           </div>
         </div>
-        <button type='button' className='profile__add-btn link' onClick={props.onAddPlaceClick}></button>
+        <button type='button' className='profile__add-btn link' onClick={onAddPlaceClick}></button>
       </section>
 
       <section className='cards'>
         {cardList.map((item) => (
-          <Card key={item._id} card={item} onCardClick={props.onCardClick}/>
+          <Card key={item._id} card={item} onCardClick={onCardClick} />
         ))}
       </section>
     </main>
