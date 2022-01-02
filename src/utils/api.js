@@ -36,10 +36,10 @@ class Api {
   // 3 Edit profile info
   saveProfile({ name, about }) {
     return fetch(`${this._baseUrl}/${this._groupID}/users/me`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
         authorization: this._authToken,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         name: name,
@@ -52,10 +52,10 @@ class Api {
   // 9 Update profile pic in server
   saveAvatar(link) {
     return fetch(`${this._baseUrl}/${this._groupID}/users/me/avatar`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
         authorization: this._authToken,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         avatar: link
@@ -67,10 +67,10 @@ class Api {
   // 4 Add new card to server
   addCard({ name, link }) {
     return fetch(`${this._baseUrl}/${this._groupID}/cards`, {
-      method: "POST",
+      method: 'POST',
       headers: {
         authorization: this._authToken,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         name: name,
@@ -83,7 +83,7 @@ class Api {
   // 7 Delete card from server
   trashCard(cardId) {
     return fetch(`${this._baseUrl}/${this._groupID}/cards/${cardId}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
         authorization: this._authToken
       }
@@ -94,10 +94,10 @@ class Api {
   // 8A Add like to card
   addLike(cardId) {
     return fetch(`${this._baseUrl}/${this._groupID}/cards/likes/${cardId}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
         authorization: this._authToken,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     })
       .then(res => this._checkServerCode(res))
@@ -106,10 +106,10 @@ class Api {
   // 8B Remove like from card
   removeLike(cardId) {
     return fetch(`${this._baseUrl}/${this._groupID}/cards/likes/${cardId}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
         authorization: this._authToken,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     })
       .then(res => this._checkServerCode(res))
@@ -117,6 +117,6 @@ class Api {
 
 }
 
-const api = new Api({baseUrl: "https://around.nomoreparties.co/v1", groupID: "group-11", authToken: "dd03cd11-47a0-450d-9165-34e32dd702c6"})
+const api = new Api({baseUrl: 'https://around.nomoreparties.co/v1', groupID: 'group-11', authToken: 'dd03cd11-47a0-450d-9165-34e32dd702c6'})
 
-export default api;
+export default api
