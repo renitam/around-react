@@ -13,8 +13,8 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
   }, [currentUser])
 
   function handleChange(e) {
-    const {name, value} = e.target
-    name === "name" ? setName(e.target.value) : setDescription(e.target.value)
+    const { name, value } = e.target
+    name === "name" ? setName(value) : setDescription(value)
   }
 
   function handleSubmit(e) {

@@ -7,6 +7,7 @@ import EditProfilePopup from './EditProfilePopup'
 import ImagePopup from './ImagePopup'
 import api from '../utils/api'
 import { CurrentUserContext } from './CurrentUserContext'
+import EditAvatarPopup from './EditAvatarPopup'
 
 function App() {
   const [isEditAvatarOpen, setEditAvatarOpen] = React.useState(false)
@@ -50,6 +51,15 @@ function App() {
       .catch(err => `Unable to save profile: ${err}`)
   }
 
+  function handleUpdateAvatar({ avatar }) {
+    api.saveAvatar(avatar)
+      .then(data => {
+        setCurrentUser(data)
+      })
+      .then(closeAllPopups())
+      .catch(err => `Unable to save avatar: ${err}`)
+  }
+
   function closeAllPopups() {
     setEditAvatarOpen(false)
     setEditProfileOpen(false)
@@ -72,18 +82,7 @@ function App() {
       
       <Footer />
 
-      <PopupWithForm isOpen={isEditAvatarOpen} name='avatar' title='Change profile picture' onClose={closeAllPopups}>
-        <input
-          type='url'
-          name='link'
-          id='avatar'
-          className='modal__input'
-          placeholder='Image link'
-          minLength='1'
-          required
-        />
-        <span className='modal__input-error modal__input-error_avatar'></span>
-      </PopupWithForm>
+      <EditAvatarPopup isOpen={isEditAvatarOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
 
       <EditProfilePopup isOpen={isEditProfileOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
