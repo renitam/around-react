@@ -17,6 +17,32 @@ function App() {
   const [isPreviewOpen, setPreviewOpen] = React.useState(false)
   const [selectedCard, setSelectedCard] = React.useState({})
   const [currentUser, setCurrentUser] = React.useState({})
+  const [cardList, setCardList] = React.useState([])
+  
+
+
+  React.useEffect(() => {
+    api.getCards()
+      .then( (initialCards) => {
+        setCardList([...initialCards])
+      })
+      .catch(err => `Unable to load data: ${err}`)
+    }, [currentUser, cardList])
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id)
+
+    api.changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCardList((state) => state.map((c) => c._id === card._id ? newCard : c));
+      });
+  }
+
+  function handleCardDelete(card) {
+    api.trashCard(card._id)
+      .then( setCardList( cardList.filter(cards => cards._id !== card._id) ))
+      .catch(err => `Unable to delete card: ${err}`)
+  }
 
   React.useEffect(() => {
     api.getProfileInfo()
@@ -78,38 +104,41 @@ function App() {
           onAddPlaceClick={handleAddPlaceClick} 
           onEditAvatarClick={handleEditAvatarClick}
           onCardClick={handleCardClick}
+          cards={cardList}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
       
-      <Footer />
+        <Footer />
 
-      <EditAvatarPopup isOpen={isEditAvatarOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
+        <EditAvatarPopup isOpen={isEditAvatarOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
 
-      <EditProfilePopup isOpen={isEditProfileOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+        <EditProfilePopup isOpen={isEditProfileOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
-      <PopupWithForm isOpen={isAddPlaceOpen} name='card' title='New place' onClose={closeAllPopups} buttonText='Create'>
-        <input
-          type='text'
-          name='name'
-          id='place'
-          className='modal__input'
-          placeholder='Title'
-          minLength='1'
-          maxLength='30'
-          required
-        />
-        <span className='modal__input-error modal__input-error_place'></span>
-        <input
-          type='url'
-          name='link'
-          id='image'
-          className='modal__input'
-          placeholder='Image link'
-          required
-        />
-        <span className='modal__input-error modal__input-error_image'></span>
-      </PopupWithForm>
+        <PopupWithForm isOpen={isAddPlaceOpen} name='card' title='New place' onClose={closeAllPopups} buttonText='Create'>
+          <input
+            type='text'
+            name='name'
+            id='place'
+            className='modal__input'
+            placeholder='Title'
+            minLength='1'
+            maxLength='30'
+            required
+          />
+          <span className='modal__input-error modal__input-error_place'></span>
+          <input
+            type='url'
+            name='link'
+            id='image'
+            className='modal__input'
+            placeholder='Image link'
+            required
+          />
+          <span className='modal__input-error modal__input-error_image'></span>
+        </PopupWithForm>
 
-      <PopupWithForm isOpen={isConfirmTrashOpen} name='trash' title='Are you sure?' onClose={closeAllPopups} buttonText='Yes' />
+        <PopupWithForm isOpen={isConfirmTrashOpen} name='trash' title='Are you sure?' onClose={closeAllPopups} buttonText='Yes' />
       </CurrentUserContext.Provider>
 
       <ImagePopup isOpen={isPreviewOpen} onClose={closeAllPopups} card={selectedCard} />

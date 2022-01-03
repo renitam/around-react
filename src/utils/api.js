@@ -24,7 +24,7 @@ class Api {
   }
 
   // 2 Load cards from server
-  getInitialCards() {
+  getCards() {
     return fetch(`${this._baseUrl}/${this._groupID}/cards`, {
       headers: {
         authorization: this._authToken
