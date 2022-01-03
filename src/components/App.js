@@ -3,6 +3,7 @@ import Header from './Header'
 import Main from './Main'
 import Footer from './Footer'
 import PopupWithForm from './PopupWithForm'
+import EditProfilePopup from './EditProfilePopup'
 import ImagePopup from './ImagePopup'
 import api from '../utils/api'
 import { CurrentUserContext } from './CurrentUserContext'
@@ -40,6 +41,15 @@ function App() {
     setPreviewOpen(true)
   }
 
+  function handleUpdateUser(userInfo) {
+    api.saveProfile(userInfo)
+      .then(data => {
+        setCurrentUser(data)
+      })
+      .then(closeAllPopups())
+      .catch(err => `Unable to save profile: ${err}`)
+  }
+
   function closeAllPopups() {
     setEditAvatarOpen(false)
     setEditProfileOpen(false)
@@ -59,7 +69,6 @@ function App() {
           onEditAvatarClick={handleEditAvatarClick}
           onCardClick={handleCardClick}
         />
-      </CurrentUserContext.Provider>
       
       <Footer />
 
@@ -76,28 +85,7 @@ function App() {
         <span className='modal__input-error modal__input-error_avatar'></span>
       </PopupWithForm>
 
-      <PopupWithForm isOpen={isEditProfileOpen} name='profile' title='Edit profile' onClose={closeAllPopups}>
-        <input
-          type='text'
-          name='name'
-          id='name'
-          className='modal__input'
-          minLength='2'
-          maxLength='40'
-          required
-        />
-        <span className='modal__input-error modal__input-error_name'></span>
-        <input
-          type='text'
-          name='about'
-          id='about'
-          className='modal__input'
-          minLength='2'
-          maxLength='200'
-          required
-        />
-        <span className='modal__input-error modal__input-error_about'></span>
-      </PopupWithForm>
+      <EditProfilePopup isOpen={isEditProfileOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
       <PopupWithForm isOpen={isAddPlaceOpen} name='card' title='New place' onClose={closeAllPopups} buttonText='Create'>
         <input
@@ -123,6 +111,7 @@ function App() {
       </PopupWithForm>
 
       <PopupWithForm isOpen={isConfirmTrashOpen} name='trash' title='Are you sure?' onClose={closeAllPopups} buttonText='Yes' />
+      </CurrentUserContext.Provider>
 
       <ImagePopup isOpen={isPreviewOpen} onClose={closeAllPopups} card={selectedCard} />
     </div>
