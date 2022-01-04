@@ -11,14 +11,14 @@ import EditAvatarPopup from './EditAvatarPopup'
 import AddPlacePopup from './AddPlacePopup'
 
 function App() {
-  const [isEditAvatarOpen, setEditAvatarOpen] = React.useState(false)
-  const [isEditProfileOpen, setEditProfileOpen] = React.useState(false)
-  const [isAddPlaceOpen, setAddPlaceOpen] = React.useState(false)
-  const [isConfirmTrashOpen, setConfirmTrashOpen] = React.useState(false)
-  const [isPreviewOpen, setPreviewOpen] = React.useState(false)
+  const [isEditAvatarOpen, setIsEditAvatarOpen] = React.useState(false)
+  const [isEditProfileOpen, setIsEditProfileOpen] = React.useState(false)
+  const [isAddPlaceOpen, setIsAddPlaceOpen] = React.useState(false)
+  const [isConfirmTrashOpen, setIsConfirmTrashOpen] = React.useState(false)
+  const [isPreviewOpen, setIsPreviewOpen] = React.useState(false)
   const [selectedCard, setSelectedCard] = React.useState({})
   const [currentUser, setCurrentUser] = React.useState({})
-  const [cardList, setCardList] = React.useState([])
+  const [cardList, setIsCardList] = React.useState([])
 
   // Load in profile info and initial cards.
   React.useEffect(() => {
@@ -32,18 +32,18 @@ function App() {
   React.useEffect(() => {
     api.getCards()
     .then( (initialCards) => {
-      setCardList([...initialCards])
+      setIsCardList([...initialCards])
     })
     .catch(err => `Unable to load cards: ${err}`)
   }, [])
 
   // Define edit profile/avatar modals and api calls
   function handleEditAvatarClick() {
-    setEditAvatarOpen(true)
+    setIsEditAvatarOpen(true)
   }
 
   function handleEditProfileClick() {
-    setEditProfileOpen(true)
+    setIsEditProfileOpen(true)
   }
 
   function handleUpdateUser(userInfo) {
@@ -51,7 +51,7 @@ function App() {
       .then(data => {
         setCurrentUser(data)
       })
-      .then(setEditProfileOpen(false))
+      .then(() => setIsEditProfileOpen(false))
       .catch(err => `Unable to save profile: ${err}`)
   }
 
@@ -60,52 +60,53 @@ function App() {
       .then(data => {
         setCurrentUser(data)
       })
-      .then(setEditAvatarOpen(false))
+      .then(() => setIsEditAvatarOpen(false))
       .catch(err => `Unable to save avatar: ${err}`)
   }
 
   // Define card preview functions
   function handleCardClick(card) {
     setSelectedCard(card)
-    setPreviewOpen(true)
+    setIsPreviewOpen(true)
   }
 
   // Define add place modal functions
   function handleAddPlaceClick() {
-    setAddPlaceOpen(true)
+    setIsAddPlaceOpen(true)
   }
 
   function handleAddPlaceSubmit({ name, link }) {
     api.addCard({ name, link })
       .then(newCard => {
-        setCardList([newCard, ...cardList])
-        setAddPlaceOpen(false)
+        setIsCardList([newCard, ...cardList])
+        setIsAddPlaceOpen(false)
       })
+      .catch(err => `Unable to add card: ${err}`)
   }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id)
 
     api.changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) => {
-        setCardList((state) => state.map((c) => c._id === card._id ? newCard : c))
+      .then(newCard => {
+        setIsCardList((state) => state.map((c) => c._id === card._id ? newCard : c))
       })
       .catch(err => `Unable to update like status: ${err}`)
   }
 
   function handleCardDelete(card) {
     api.trashCard(card._id)
-      .then( setCardList( cardList.filter(cards => cards._id !== card._id) ))
+      .then(() => setIsCardList( cardList.filter(cards => cards._id !== card._id) ))
       .catch(err => `Unable to delete card: ${err}`)
   }
 
   // Define close modal function for all modals
   function closeAllPopups() {
-    setEditAvatarOpen(false)
-    setEditProfileOpen(false)
-    setAddPlaceOpen(false)
-    setConfirmTrashOpen(false)
-    setPreviewOpen(false)
+    setIsEditAvatarOpen(false)
+    setIsEditProfileOpen(false)
+    setIsAddPlaceOpen(false)
+    setIsConfirmTrashOpen(false)
+    setIsPreviewOpen(false)
     setSelectedCard({})
   }
 
@@ -122,15 +123,10 @@ function App() {
           onCardLike={handleCardLike}
           onCardDelete={handleCardDelete}
         />
-      
         <Footer />
-
         <EditAvatarPopup isOpen={isEditAvatarOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
-
         <EditProfilePopup isOpen={isEditProfileOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-
         <AddPlacePopup isOpen={isAddPlaceOpen} onClose={closeAllPopups} onUpdateCards={handleAddPlaceSubmit}/>
-
         <PopupWithForm isOpen={isConfirmTrashOpen} name='trash' title='Are you sure?' onClose={closeAllPopups} buttonText='Yes' />
       </CurrentUserContext.Provider>
 

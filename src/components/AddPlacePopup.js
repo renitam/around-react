@@ -2,18 +2,22 @@ import PopupWithForm from "./PopupWithForm"
 import React from "react"
 
 function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
-  const placeTitle = React.createRef()
-  const placeLink = React.createRef()
+  const [name, setName] = React.useState('')
+  const [link, setLink] = React.useState('')
+
+  React.useEffect(() => {
+    setName('')
+    setLink('')
+  }, [isOpen])
 
   function handleAddCard(e) {
     e.preventDefault()
-    console.log(placeTitle.current.value, placeLink.current.value)
-    onUpdateCards({ 
-      name: placeTitle.current.value, 
-      link: placeLink.current.value 
-    })
-    placeTitle.current.value = ''
-    placeLink.current.value = ''
+    onUpdateCards({ name, link })
+  }
+
+  function handleChange(e) {
+    const {name, value } = e.target
+    name === "name" ? setName(value) : setLink(value)
   }
 
   return(
@@ -22,7 +26,8 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
         type='text'
         name='name'
         id='place'
-        ref={placeTitle}
+        value={name}
+        onChange={handleChange}
         className='modal__input'
         placeholder='Title'
         minLength='1'
@@ -34,7 +39,8 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
         type='url'
         name='link'
         id='image'
-        ref={placeLink}
+        value={link}
+        onChange={handleChange}
         className='modal__input'
         placeholder='Image link'
         required
