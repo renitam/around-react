@@ -2,13 +2,13 @@ import React from 'react'
 import Header from './Header'
 import Main from './Main'
 import Footer from './Footer'
-import PopupWithForm from './PopupWithForm'
 import EditProfilePopup from './EditProfilePopup'
 import ImagePopup from './ImagePopup'
 import api from '../utils/api'
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
 import EditAvatarPopup from './EditAvatarPopup'
 import AddPlacePopup from './AddPlacePopup'
+import TrashPopup from './TrashPopup'
 
 function App() {
   const [isEditAvatarOpen, setIsEditAvatarOpen] = React.useState(false)
@@ -94,10 +94,17 @@ function App() {
       .catch(err => `Unable to update like status: ${err}`)
   }
 
-  function handleCardDelete(card) {
-    api.trashCard(card._id)
-      .then(() => setIsCardList( cardList.filter(cards => cards._id !== card._id) ))
+  function handleCardDelete() {
+    api.trashCard(selectedCard._id)
+      .then(() => setIsCardList( cardList.filter(cards => cards._id !== selectedCard._id) ))
+      .then(() => setSelectedCard({}))
+      .then(() => setIsConfirmTrashOpen(false))
       .catch(err => `Unable to delete card: ${err}`)
+  }
+
+  function handleTrash(card) {
+    setSelectedCard(card)
+    setIsConfirmTrashOpen(true)
   }
 
   // Define close modal function for all modals
@@ -121,13 +128,13 @@ function App() {
           onCardClick={handleCardClick}
           cards={cardList}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleTrash}
         />
         <Footer />
         <EditAvatarPopup isOpen={isEditAvatarOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
         <EditProfilePopup isOpen={isEditProfileOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
         <AddPlacePopup isOpen={isAddPlaceOpen} onClose={closeAllPopups} onUpdateCards={handleAddPlaceSubmit}/>
-        <PopupWithForm isOpen={isConfirmTrashOpen} name='trash' title='Are you sure?' onClose={closeAllPopups} buttonText='Yes' />
+        <TrashPopup isOpen={isConfirmTrashOpen} onClose={closeAllPopups} onUpdateTrash={handleCardDelete} />
       </CurrentUserContext.Provider>
 
       <ImagePopup isOpen={isPreviewOpen} onClose={closeAllPopups} card={selectedCard} />
