@@ -18,24 +18,15 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({})
   const [currentUser, setCurrentUser] = React.useState({})
   const [cardList, setCardList] = React.useState([])
-  
-
-
-  React.useEffect(() => {
-    api.getCards()
-      .then( (initialCards) => {
-        setCardList([...initialCards])
-      })
-      .catch(err => `Unable to load data: ${err}`)
-    }, [currentUser, cardList])
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id)
 
     api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        setCardList((state) => state.map((c) => c._id === card._id ? newCard : c));
-      });
+        setCardList((state) => state.map((c) => c._id === card._id ? newCard : c))
+      })
+      .catch(err => `Unable to update like status: ${err}`)
   }
 
   function handleCardDelete(card) {
@@ -47,8 +38,15 @@ function App() {
   React.useEffect(() => {
     api.getProfileInfo()
       .then((info) => {
-        setCurrentUser(info);
+        setCurrentUser(info)
       })
+      .catch(err => `Unable to load profile info: ${err}`)
+    
+    api.getCards()
+      .then( (initialCards) => {
+        setCardList([...initialCards])
+      })
+      .catch(err => `Unable to load cards: ${err}`)
   }, [])
 
   function handleEditAvatarClick() {
