@@ -6,8 +6,9 @@ import PopupWithForm from './PopupWithForm'
 import EditProfilePopup from './EditProfilePopup'
 import ImagePopup from './ImagePopup'
 import api from '../utils/api'
-import { CurrentUserContext } from './CurrentUserContext'
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
 import EditAvatarPopup from './EditAvatarPopup'
+import AddPlacePopup from './AddPlacePopup'
 
 function App() {
   const [isEditAvatarOpen, setEditAvatarOpen] = React.useState(false)
@@ -18,6 +19,69 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({})
   const [currentUser, setCurrentUser] = React.useState({})
   const [cardList, setCardList] = React.useState([])
+
+  // Load in profile info and initial cards.
+  React.useEffect(() => {
+    api.getProfileInfo()
+      .then((info) => {
+        setCurrentUser(info)
+      })
+      .catch(err => `Unable to load profile info: ${err}`)
+  }, [])
+
+  React.useEffect(() => {
+    api.getCards()
+    .then( (initialCards) => {
+      setCardList([...initialCards])
+    })
+    .catch(err => `Unable to load cards: ${err}`)
+  }, [])
+
+  // Define edit profile/avatar modals and api calls
+  function handleEditAvatarClick() {
+    setEditAvatarOpen(true)
+  }
+
+  function handleEditProfileClick() {
+    setEditProfileOpen(true)
+  }
+
+  function handleUpdateUser(userInfo) {
+    api.saveProfile(userInfo)
+      .then(data => {
+        setCurrentUser(data)
+      })
+      .then(setEditProfileOpen(false))
+      .catch(err => `Unable to save profile: ${err}`)
+  }
+
+  function handleUpdateAvatar({ avatar }) {
+    api.saveAvatar(avatar)
+      .then(data => {
+        setCurrentUser(data)
+      })
+      .then(setEditAvatarOpen(false))
+      .catch(err => `Unable to save avatar: ${err}`)
+  }
+
+  // Define card preview functions
+  function handleCardClick(card) {
+    setSelectedCard(card)
+    setPreviewOpen(true)
+  }
+
+  // Define add place modal functions
+  function handleAddPlaceClick() {
+    setAddPlaceOpen(true)
+  }
+
+  function handleAddPlaceSubmit({ name, link }) {
+    api.addCard({ name, link })
+      .then(newCard => {
+        setCardList([newCard, ...cardList])
+        setAddPlaceOpen(false)
+      })
+  }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id)
@@ -35,55 +99,7 @@ function App() {
       .catch(err => `Unable to delete card: ${err}`)
   }
 
-  React.useEffect(() => {
-    api.getProfileInfo()
-      .then((info) => {
-        setCurrentUser(info)
-      })
-      .catch(err => `Unable to load profile info: ${err}`)
-    
-    api.getCards()
-      .then( (initialCards) => {
-        setCardList([...initialCards])
-      })
-      .catch(err => `Unable to load cards: ${err}`)
-  }, [])
-
-  function handleEditAvatarClick() {
-    setEditAvatarOpen(true)
-  }
-
-  function handleEditProfileClick() {
-    setEditProfileOpen(true)
-  }
-
-  function handleAddPlaceClick() {
-    setAddPlaceOpen(true)
-  }
-
-  function handleCardClick(card) {
-    setSelectedCard(card)
-    setPreviewOpen(true)
-  }
-
-  function handleUpdateUser(userInfo) {
-    api.saveProfile(userInfo)
-      .then(data => {
-        setCurrentUser(data)
-      })
-      .then(closeAllPopups())
-      .catch(err => `Unable to save profile: ${err}`)
-  }
-
-  function handleUpdateAvatar({ avatar }) {
-    api.saveAvatar(avatar)
-      .then(data => {
-        setCurrentUser(data)
-      })
-      .then(closeAllPopups())
-      .catch(err => `Unable to save avatar: ${err}`)
-  }
-
+  // Define close modal function for all modals
   function closeAllPopups() {
     setEditAvatarOpen(false)
     setEditProfileOpen(false)
@@ -113,28 +129,7 @@ function App() {
 
         <EditProfilePopup isOpen={isEditProfileOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
-        <PopupWithForm isOpen={isAddPlaceOpen} name='card' title='New place' onClose={closeAllPopups} buttonText='Create'>
-          <input
-            type='text'
-            name='name'
-            id='place'
-            className='modal__input'
-            placeholder='Title'
-            minLength='1'
-            maxLength='30'
-            required
-          />
-          <span className='modal__input-error modal__input-error_place'></span>
-          <input
-            type='url'
-            name='link'
-            id='image'
-            className='modal__input'
-            placeholder='Image link'
-            required
-          />
-          <span className='modal__input-error modal__input-error_image'></span>
-        </PopupWithForm>
+        <AddPlacePopup isOpen={isAddPlaceOpen} onClose={closeAllPopups} onUpdateCards={handleAddPlaceSubmit}/>
 
         <PopupWithForm isOpen={isConfirmTrashOpen} name='trash' title='Are you sure?' onClose={closeAllPopups} buttonText='Yes' />
       </CurrentUserContext.Provider>

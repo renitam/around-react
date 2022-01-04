@@ -1,18 +1,19 @@
 import React from 'react'
 import Card from './Card'
-import { CurrentUserContext } from './CurrentUserContext'
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
 
 function Main({ onEditAvatarClick, onEditProfileClick, onAddPlaceClick, onCardClick, cards, onCardLike, onCardDelete }) {
 
-  console.log(cards)
-  const currentUser = React.useContext(CurrentUserContext)
+  const currentUser = React.useContext(CurrentUserContext) || ''
   const [userName, setUserName] = React.useState('')
   const [userAbout, setUserAbout] = React.useState('')
   const [userAvatar, setUserAvatar] = React.useState('')
 
-  setUserName(currentUser.name || '')
-  setUserAbout(currentUser.about || '')
-  setUserAvatar(currentUser.avatar || '')
+  React.useEffect( () => {
+    setUserName(currentUser.name || '')
+    setUserAbout(currentUser.about || '')
+    setUserAvatar(currentUser.avatar || '')
+  }, [currentUser])
 
   return(
     <main>
