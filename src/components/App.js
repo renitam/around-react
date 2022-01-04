@@ -18,7 +18,7 @@ function App() {
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false)
   const [selectedCard, setSelectedCard] = React.useState({})
   const [currentUser, setCurrentUser] = React.useState({})
-  const [cardList, setIsCardList] = React.useState([])
+  const [cardList, setCardList] = React.useState([])
 
   // Load in profile info and initial cards.
   React.useEffect(() => {
@@ -32,7 +32,7 @@ function App() {
   React.useEffect(() => {
     api.getCards()
     .then( (initialCards) => {
-      setIsCardList([...initialCards])
+      setCardList([...initialCards])
     })
     .catch(err => console.error(`Unable to load cards: ${err}`))
   }, [])
@@ -78,7 +78,7 @@ function App() {
   function handleAddPlaceSubmit({ name, link }) {
     api.addCard({ name, link })
       .then(newCard => {
-        setIsCardList([newCard, ...cardList])
+        setCardList([newCard, ...cardList])
         setIsAddPlaceOpen(false)
       })
       .catch(err => console.error(`Unable to add card: ${err}. Check link and try again.`))
@@ -89,14 +89,14 @@ function App() {
 
     api.changeLikeCardStatus(card._id, !isLiked)
       .then(newCard => {
-        setIsCardList((state) => state.map((c) => c._id === card._id ? newCard : c))
+        setCardList((state) => state.map((c) => c._id === card._id ? newCard : c))
       })
       .catch(err => console.error(`Unable to update like status: ${err}`))
   }
 
   function handleCardDelete(card) {
     api.trashCard(card._id)
-      .then(() => setIsCardList( cardList.filter(cards => cards._id !== card._id) ))
+      .then(() => setCardList( cardList.filter(cards => cards._id !== card._id) ))
       .catch(err => console.error(`Unable to delete card: ${err}`))
   }
 
