@@ -26,7 +26,7 @@ function App() {
       .then((info) => {
         setCurrentUser(info)
       })
-      .catch(err => `Unable to load profile info: ${err}`)
+      .catch(err => console.error(`Unable to load profile info: ${err}`))
   }, [])
 
   React.useEffect(() => {
@@ -34,7 +34,7 @@ function App() {
     .then( (initialCards) => {
       setIsCardList([...initialCards])
     })
-    .catch(err => `Unable to load cards: ${err}`)
+    .catch(err => console.error(`Unable to load cards: ${err}`))
   }, [])
 
   // Define edit profile/avatar modals and api calls
@@ -52,7 +52,7 @@ function App() {
         setCurrentUser(data)
       })
       .then(() => setIsEditProfileOpen(false))
-      .catch(err => `Unable to save profile: ${err}`)
+      .catch(err => console.error(`Unable to save profile: ${err}`))
   }
 
   function handleUpdateAvatar({ avatar }) {
@@ -61,7 +61,7 @@ function App() {
         setCurrentUser(data)
       })
       .then(() => setIsEditAvatarOpen(false))
-      .catch(err => `Unable to save avatar: ${err}`)
+      .catch(err => console.error(`Unable to save avatar: ${err}`))
   }
 
   // Define card preview functions
@@ -81,7 +81,7 @@ function App() {
         setIsCardList([newCard, ...cardList])
         setIsAddPlaceOpen(false)
       })
-      .catch(err => `Unable to add card: ${err}`)
+      .catch(err => console.error(`Unable to add card: ${err}. Check link and try again.`))
   }
 
   function handleCardLike(card) {
@@ -91,13 +91,13 @@ function App() {
       .then(newCard => {
         setIsCardList((state) => state.map((c) => c._id === card._id ? newCard : c))
       })
-      .catch(err => `Unable to update like status: ${err}`)
+      .catch(err => console.error(`Unable to update like status: ${err}`))
   }
 
   function handleCardDelete(card) {
     api.trashCard(card._id)
       .then(() => setIsCardList( cardList.filter(cards => cards._id !== card._id) ))
-      .catch(err => `Unable to delete card: ${err}`)
+      .catch(err => console.error(`Unable to delete card: ${err}`))
   }
 
   // Define close modal function for all modals
