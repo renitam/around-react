@@ -3,7 +3,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext"
 
 function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext) || ''
-  const isOwn = card.owner._id === currentUser._id
+  const isOwned = card.owner._id === currentUser._id
   const isLiked = card.likes.some(i => i._id === currentUser._id)
   const likeClass = `card__like ${isLiked && 'card__like_active'}`
 
@@ -21,7 +21,7 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
  
   return(
     <article className='card'>
-      {isOwn &&
+      {isOwned &&
       <button
         type='button'
         className='card__trash link'
